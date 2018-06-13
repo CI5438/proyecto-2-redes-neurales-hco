@@ -14,10 +14,17 @@ import sys
 
 import pandas as pd
 
+def dummies(df):
+    """Create a set of dummy variables from the 'var' variable
+    
+    @param df dataframe
+    @param var variable to create a dummy
+    @return dataframe
+    """
+    return pd.get_dummies(df)
 
 def read_file(filename):
-    """
-    Reads file and process it using panda dataframes.
+    """Reads file and process it using panda dataframes.
     
     @param name of the file
     @return dataframe
@@ -30,10 +37,10 @@ def read_file(filename):
         sys.exit()
 
 def init():
-    """
-    Main Program. Executes methods for solving third question.
+    """Main Program. Executes methods for solving third question.
     """
     df = read_file("iris.data")
+    df = dummies(df)
 
 if __name__ == '__main__':
     init()
