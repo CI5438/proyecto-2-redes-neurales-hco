@@ -14,6 +14,16 @@ import sys
 
 import pandas as pd
 
+def drop_column(df, column):
+    """Remove column by specifying label names.
+    """
+    try:
+        df = df.drop(column, axis=1)
+    except ValueError as err:
+        print(err)
+
+    return df
+
 def dummies(df):
     """Create a set of dummy variables from the 'var' variable
     
@@ -41,6 +51,9 @@ def init():
     """
     df = read_file("iris.data")
     df = dummies(df)
+    df = drop_column(df, 'Class_Iris-versicolor')
+    df = drop_column(df, 'Class_Iris-virginica')
+    #df.to_csv('x.txt')
 
 if __name__ == '__main__':
     init()
