@@ -24,6 +24,20 @@ def norm2(x):
         plus += x[i]**2
     return sqrt(plus)
 
+def read_dataset(filename):
+    dataset = open(filename, "r")
+    t = []
+    goal=[]
+
+    lines=dataset.readlines()
+    
+    for line in lines:
+        t.append([line.split(' ')[0],line.split(' ')[1]])
+        goal.append([(line.split(' ')[2]).rstrip()]) # removing /n
+    dataset.close()
+
+    return t,goal
+
 class Network:
 
     def __init__(self, q):
@@ -76,6 +90,7 @@ class Network:
             #supongamos que el dato esta almacenado en t
             t = [[0,0],[0,1],[1,0],[1,1]]
             goal = [[0,1], [1,0], [1,0], [0,1]]
+            goal = [[1],[2],[3]]
             for i in range(len(t)):  #para cada ejemplo
                 o=[t[i]]
                 s=[]
@@ -140,3 +155,8 @@ class Network:
 
 
 n = Network([2, 2, 2])
+#Lectura de datos
+#Verificar el entrenamiento con esos datos
+#todas y cada una de las pruebas que manda caromar
+    #Hacer el trabajo de los datos que ella pide
+#Trabajar con la base de datos que ella pide (Iris data set)
