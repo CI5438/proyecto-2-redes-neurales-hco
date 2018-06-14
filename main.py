@@ -36,14 +36,6 @@ class Network:
         self.init_layers(q)
         self.init_weights(q)
 
-        print("capas:")
-        print(self.layers)
-        print("pesos:")
-        print(self.weights)
-        print("x0:")
-        print(self.x0_weights)
-        self.training(0.1)
-
     def init_layers(self, q):
         for i in range(len(q)):
             self.layers.append([x for x in range(q[i])])
@@ -65,7 +57,7 @@ class Network:
 
         return True
 
-    def training(self, n):
+    def training(self, n, t, goal):
         it = 1
         max_it = 100000
         epsilon = 10**-4
@@ -74,8 +66,7 @@ class Network:
         while (norm2(sub_vec(w_new,w_old))>epsilon and it<max_it): #para todos los conjuntos de ejemplos
             #para cada ejemplo
             #supongamos que el dato esta almacenado en t
-            t = [[0,0],[0,1],[1,0],[1,1]]
-            goal = [[0,1], [1,0], [1,0], [0,1]]
+
             for i in range(len(t)):  #para cada ejemplo
                 o=[t[i]]
                 s=[]
@@ -138,5 +129,14 @@ class Network:
                 print(self.x0_weights)
                 print("IT: ", it)
 
-
-n = Network([2, 2, 2])
+if __name__ == '__main__':
+    n = Network([2, 2, 2])
+    print("capas:")
+    print(n.layers)
+    print("pesos:")
+    print(n.weights)
+    print("x0:")
+    print(n.x0_weights)
+    t = [[0,0],[0,1],[1,0],[1,1]]
+    goal = [[0,1], [1,0], [1,0], [0,1]]
+    n.training(0.1, t, goal)
