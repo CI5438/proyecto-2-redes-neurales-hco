@@ -82,7 +82,7 @@ class Network:
     def training(self, n, t,goal):
         it = 1
         max_it = 100000
-        epsilon = 10**-5
+        epsilon = 10**-7
         w_new=[1]
         w_old=[2]
         while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)): #para todos los conjuntos de ejemplos
@@ -124,10 +124,10 @@ class Network:
                     s.append(aux)
 
                 s.reverse()
-                print("O:")
-                print(o)
-                print("S:")
-                print(s)
+                #print("O:")
+                #print(o)
+                #print("S:")
+                #print(s)
 
 
                 w_old=[]
@@ -147,12 +147,29 @@ class Network:
                         w_new.append(self.x0_weights[j][k])
 
             it=it+1
-            print("weights:")
-            print(self.weights)
-            print("x0_weights:")
-            print(self.x0_weights)
+            #print("weights:")
+            #print(self.weights)
+            #print("x0_weights:")
+            #print(self.x0_weights)
             print("IT: ", it)
-            print((norm2(sub_vec(w_new,w_old))))    
+            print((norm2(sub_vec(w_new,w_old))))
+
+    def eval(self,example, y):
+        o=[example]
+        s=[]
+        for j in range(1,len(self.layers)): #para cada capa, excepto la inicial 
+            aux=[]
+            for k in range(len(self.layers[j])): #para cada elemento de esa capa
+                net=self.x0_weights[j-1][k]
+                for l in range(len(o[j-1])):
+                    net = net + o[j-1][l]*self.weights[j-1][l][k]
+                aux.append(1/(1+exp(-net)))
+            o.append(aux)
+
+        print("Resultado obtenido: "+str(o[len(o)-1][0]))
+        print("Resultado correcto: "+str(y[0]))
+
+
 
 
 n = Network([2, 2, 1])
@@ -162,6 +179,10 @@ x,y=read_dataset("datosP2_AJ2018_B1_N1000.txt")
 #print(y)
 
 n.training(0.01,x,y)
+x_1,y_1=read_dataset("datosP2_AJ2018_B1_N1000.txt")
+
+for i in range(len(x_1)):
+    n.eval(x_1[i],y_1[i])
 
 
 #Lectura de datos
