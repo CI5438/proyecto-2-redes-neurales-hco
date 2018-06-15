@@ -2,7 +2,7 @@
 Universidad Simon Bolivar
 Artificial Intelligence II - CI5438
 
-Neural Networks
+Description: Neural Networks algorithm
 
 Authors:
     David Cabeza 1310191
