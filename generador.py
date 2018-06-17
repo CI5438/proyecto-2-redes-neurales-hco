@@ -44,7 +44,7 @@ def generador(n, radio, nombre):
 	
 n=[500,1000,2000, 500, 1000, 2000]
 radio=[6,6,6,8,8,8]
-nombre=["datos_prueba_N500_B1.txt", "datos_prueba_N1000_B1.txt", "datos_prueba_N2000_B1.txt","datos_prueba_N500_B2.txt", "datos_prueba_N1000_B2.txt", "datos_prueba_N2000_B2.txt"]
+nombre=["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt","datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
 
 for i in range(len(n)):
 	generador(n[i], radio[i], nombre[i])
