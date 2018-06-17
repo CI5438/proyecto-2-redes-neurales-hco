@@ -15,6 +15,22 @@ from random import uniform
 def pertenece_B(x,y,radio):
 	return ((x-10)**2) + ((y-10)**2) <= (radio**2)
 
+def generador_barrido_zona(n,x1,x2,y1,y2,radio, nombre):
+	division_eje_x=(x2-x1)/(n-1)
+	division_eje_y=(y2-y1)/(n-1)
+	h=open(nombre, "w")
+	aux_x=x1
+	while (aux_x<x2):
+		aux_y=y1
+		while(aux_y<y2):
+			pertenece=0
+			if (pertenece_B(aux_x, aux_y, radio)):
+				pertenece=1
+			h.write(str(aux_x)+' '+str(aux_y)+" "+str(pertenece)+'\n')
+			aux_y = aux_y + division_eje_y
+		aux_x = aux_x + division_eje_x
+	h.close()
+
 def generador(n, radio, nombre):
 	area_A=0
 	area_B=0
@@ -48,3 +64,7 @@ nombre=["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "
 
 for i in range(len(n)):
 	generador(n[i], radio[i], nombre[i])
+
+generador_barrido_zona(100.0,0.0,20.0,0.0,20.0,6,"prueba_B1_barrido_100_por_100.txt")
+generador_barrido_zona(100.0,0.0,20.0,0.0,20.0,8,"prueba_B2_barrido_100_por_100.txt")
+
