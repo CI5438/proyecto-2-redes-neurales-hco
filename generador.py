@@ -31,7 +31,7 @@ def generador(n, radio):
 		f.write(str(a[i][0])+' '+str(a[i][1])+'\n')
 	for i in range (len(b)):
 		g.write(str(b[i][0])+' '+str(b[i][1])+'\n')
-	for i in range (len(a)):
+	for i in range (10):
 		h.write(str(b[i][0])+' '+str(b[i][1])+" "+str(1)+'\n')
 		h.write(str(a[i][0])+' '+str(a[i][1])+" "+str(0)+'\n')
 	f.close()
