@@ -11,12 +11,11 @@ Authors:
 """
 
 from random import uniform
-import numpy as np
 
 def pertenece_B(x,y,radio):
 	return ((x-10)**2) + ((y-10)**2) <= (radio**2)
 
-def generador(n, radio):
+def generador(n, radio, nombre):
 	area_A=0
 	area_B=0
 	a=[]
@@ -37,22 +36,15 @@ def generador(n, radio):
 			area_B=area_B+1
 			b.append([x,y])
 
-	f=open("1.txt","w")
-	g=open("2.txt","w")
-	h=open("datos_prueba_N2000_B1.txt", "w")
+	h=open(nombre, "w")
 	for i in range (len(a)):
-		f.write(str(a[i][0])+' '+str(a[i][1])+'\n')
-	for i in range (len(b)):
-		g.write(str(b[i][0])+' '+str(b[i][1])+'\n')
-	for i in range (10):
 		h.write(str(b[i][0])+' '+str(b[i][1])+" "+str(1)+'\n')
 		h.write(str(a[i][0])+' '+str(a[i][1])+" "+str(0)+'\n')
-	f.close()
-	g.close()
 	h.close()
-	print(a)
-	print(b)
-
-	return a, b
 	
-a, b = generador(2000,6)
+n=[500,1000,2000, 500, 1000, 2000]
+radio=[6,6,6,8,8,8]
+nombre=["datos_prueba_N500_B1.txt", "datos_prueba_N1000_B1.txt", "datos_prueba_N2000_B1.txt","datos_prueba_N500_B2.txt", "datos_prueba_N1000_B2.txt", "datos_prueba_N2000_B2.txt"]
+
+for i in range(len(n)):
+	generador(n[i], radio[i], nombre[i])
