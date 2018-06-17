@@ -1,4 +1,17 @@
+"""
+Universidad Simon Bolivar
+Artificial Intelligence II - CI5438
+
+Description : dataset generator.
+
+Authors:
+    David Cabeza 1310191
+    Rafael Blanco 1310156
+    Fabiola Martinez 1310838
+"""
+
 from random import uniform
+import numpy as np
 
 def pertenece_B(x,y,radio):
 	return ((x-10)**2) + ((y-10)**2) <= (radio**2)
@@ -37,7 +50,9 @@ def generador(n, radio):
 	f.close()
 	g.close()
 	h.close()
-	#print(a)
-	#print(b)
+	print(a)
+	print(b)
 
-generador(2000,6)
+	return a, b
+	
+a, b = generador(2000,6)
