@@ -70,6 +70,11 @@ def split(df, p):
     
     return df.sample(n=training_size)
 
+def process_data_for_training(df):
+    x = []
+    y = []
+    return x, y
+
 def start_training(df):
     data_size_percentages = [50, 60, 70, 80, 90]
 
