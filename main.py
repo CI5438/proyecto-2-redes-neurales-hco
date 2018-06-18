@@ -83,7 +83,7 @@ class Network:
     def training(self, n, t, goal):
         #t,goal = read_dataset(nombre)
         it = 1
-        max_it = 100000
+        max_it = 1000
         epsilon = 10**-5
         w_new=[1]
         w_old=[2]
@@ -99,7 +99,7 @@ class Network:
 
     def eval_area(self, t, goal):
         dentro=[]
-        afuera=[]
+        fuera=[]
         aciertos=0
         desaciertos=0
         falso_positivo=0
@@ -113,7 +113,7 @@ class Network:
             if(round(o[len(o)-1][0],0)==1.0):
                 dentro.append(t[i])
             else:
-                afuera.append(t[i])
+                fuera.append(t[i])
             if (correcto):
                 aciertos=aciertos+1
             else:
@@ -176,50 +176,41 @@ class Network:
                 w_new.append(self.x0_weights[i][j])
         return w_old, w_new
 
+def corrida(datos, prueba, n, tasa):
+    print("Nombre del archivo de datos: "+datos)
+    x,y = read_dataset(datos)
+    datos_prueba_x, datos_prueba_y = read_dataset(prueba)
+    dentro=[]
+    fuera=[]
+    aciertos=[]
+    desaciertos=[]
+    falso_positivo=[]
+    falso_negativo=[]
+    for i in range(n):
+        net = Network([2,6,1])
+        net.training(tasa, x, y)
+        a,b,c,d,e,f = net.eval_area(datos_prueba_x, datos_prueba_y)
+        dentro.append(a)
+        fuera.append(b)
+        aciertos.append(c)
+        desaciertos.append(d)
+        falso_positivo.append(e)
+        falso_negativo.append(f)
+    print("\n\nPromedio de resultados para "+str(n)+" corridas:")
+    print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
+    print("Falso Positivo: "+str(promedio(falso_positivo))+" Falso negativo: "+str(promedio(falso_negativo))+"\n")
+
+b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
+b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
+b1_generados_archivos = ["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt"]
+b1_generados_archivos = ["datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
+prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
+corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3)
+
+
 #n = Network([8, 3, 8])
 #x=[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0]]
 #y=[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0]]
 #n = Network([2, 2, 2])
 #x = [[0,0],[0,1],[1,0],[1,1]]
 #y = [[0,1], [1,0], [1,0], [0,1]]
-
-#n = Network([2,6,1])
-b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
-b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
-prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
-
-#n.training(0.3,x,y)
-#n.training(0.3,nombre)
-print("Nombre del archivo de datos: "+b1_archivos[0])
-x,y = read_dataset(b1_archivos[0])
-datos_prueba_x, datos_prueba_y = read_dataset(prueba_archivos[0])
-dentro=[]
-fuera=[]
-aciertos=[]
-desaciertos=[]
-falso_positivo=[]
-falso_negativo=[]
-for i in range(10):
-    n = Network([2,6,1])
-    n.training(0.3, x, y)
-    a,b,c,d,e,f = n.eval_area(datos_prueba_x, datos_prueba_y)
-    dentro.append(a)
-    fuera.append(b)
-    aciertos.append(c)
-    desaciertos.append(d)
-    falso_positivo.append(e)
-    falso_negativo.append(f)
-print("\n\nPromedio de resultados para 10 corridas:")
-print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
-print("Falso Positivo: "+str(promedio(falso_positivo))+" Falso negativo: "+str(promedio(falso_negativo))+"\n")
-
-
-
-
-
-
-
-#print("Impresion de resultados \n\n\n")
-#for i in range(len(datos_prueba_x)):
-#n.eval(x,y)
-#n.eval(datos_prueba_x[i],datos_prueba_y[i])
