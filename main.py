@@ -228,17 +228,18 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
 # prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
 # corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3, 6)
 
-alpha = [0.1,0.2,0.3]
-data = "datosP2_AJ2018_B2_N2000.txt"
-proving = "prueba_B2_barrido_100_por_100.txt"
+if __name__ == '__main__':
+    alpha = [0.1,0.2,0.3]
+    data = "datosP2_AJ2018_B2_N2000.txt"
+    proving = "prueba_B2_barrido_100_por_100.txt"
 
 
-h=open("results.csv", "w")
-h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo\n")
-for i in range(len(alpha)):
-    print("alpha: ",alpha[i])
-    print("---------------------------------------------------------------------")
-    n=1
-    a,b,c,d=corrida(data,proving,n,alpha[i],6)
-    h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+"\n")
-h.close()
+    h=open("results.csv", "w")
+    h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo\n")
+    for i in range(len(alpha)):
+        print("alpha: ",alpha[i])
+        print("---------------------------------------------------------------------")
+        n=1
+        a,b,c,d=corrida(data,proving,n,alpha[i],6)
+        h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+"\n")
+    h.close()
