@@ -176,18 +176,18 @@ class Network:
                 w_new.append(self.x0_weights[i][j])
         return w_old, w_new
 
-def corrida(datos, prueba, n, tasa):
+def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     print("Nombre del archivo de datos: "+datos)
     x,y = read_dataset(datos)
     datos_prueba_x, datos_prueba_y = read_dataset(prueba)
-    dentro=[]
+    dentro=[] #dentro[0]
     fuera=[]
     aciertos=[]
     desaciertos=[]
     falso_positivo=[]
     falso_negativo=[]
     for i in range(n):
-        net = Network([2,6,1])
+        net = Network([2,neuronas_intermedia,1])
         net.training(tasa, x, y)
         a,b,c,d,e,f = net.eval_area(datos_prueba_x, datos_prueba_y)
         dentro.append(a)
@@ -203,9 +203,9 @@ def corrida(datos, prueba, n, tasa):
 b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
 b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
 b1_generados_archivos = ["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt"]
-b1_generados_archivos = ["datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
+b2_generados_archivos = ["datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
 prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
-corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3)
+corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3, 6)
 
 
 #n = Network([8, 3, 8])
