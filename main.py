@@ -83,19 +83,30 @@ class Network:
     def training(self, n, t, goal):
         #t,goal = read_dataset(nombre)
         it = 1
+        aciertos=0
+        desaciertos=0
         max_it = 1000
         epsilon = 10**-5
         w_new=[1]
         w_old=[2]
+        print("Inicio de Entrenamiento")
         while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)): #para todos los conjuntos de ejemplos
-        #while ((it<max_it)):
             for i in range(len(t)):  #para cada ejemplo
                 o=self.get_o(t[i])
                 s=self.get_s(o, goal[i])
                 w_old,w_new = self.actualizar_pesos(n,s,o)
+                if(round(o[len(o)-1][0],0)==goal[i][0]):
+                    aciertos=aciertos+1
+                else:
+                    desaciertos=desaciertos+1
 
             it=it+1
         print("Entrenamiento terminado.\n numero de neuronas capa intermedia: "+str(len(self.layers[1]))+"\n numero de iteraciones: "+str(it)+"\n tasa de aprendizaje: "+str(n))
+        efec=aciertos*100/(aciertos+desaciertos)
+        print("Estadisticas durante entrenamiento:")
+        print("Casos acertados: "+str(aciertos)+" ,Casos no acertados: "+str(desaciertos)+" Efectividad: "+str(efec)+"%")
+        print("Estadisticas de los datos de entrenamiento: ")
+        self.eval_area(t,goal)
 
     def eval_area(self, t, goal):
         dentro=[]
@@ -123,7 +134,7 @@ class Network:
                 if (round(o[len(o)-1][0],0)==0.0):
                     falso_negativo=falso_negativo+1
         efec=aciertos*100/(aciertos+desaciertos)
-        print("\nCasos acertados: "+str(aciertos)+" ,Casos no acertados: "+str(desaciertos)+" Efectividad: "+str(efec)+"%")
+        print("Casos acertados: "+str(aciertos)+" ,Casos no acertados: "+str(desaciertos)+" Efectividad: "+str(efec)+"%")
         print("Falso Positivo: "+str(falso_positivo)+" Falso negativo: "+str(falso_negativo)+"\n")
 
         return dentro, fuera, aciertos, desaciertos, falso_positivo, falso_negativo
@@ -189,6 +200,7 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     for i in range(n):
         net = Network([2,neuronas_intermedia,1])
         net.training(tasa, x, y)
+        print("Estadistica de datos de prueba: ")
         a,b,c,d,e,f = net.eval_area(datos_prueba_x, datos_prueba_y)
         dentro.append(a)
         fuera.append(b)
