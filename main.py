@@ -202,6 +202,7 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     falso_positivo=[]
     falso_negativo=[]
     err_acum=[]
+    err_entrenamiento=[]
     for i in range(n):
         net = Network([2,neuronas_intermedia,1])
         net.training(tasa, x, y)
@@ -214,11 +215,11 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
         falso_positivo.append(e)
         falso_negativo.append(f)
         err_acum.append(g)
+        err_entrenamiento.append(net.get_err()[len(net.get_err())-1])
     print("\n\nPromedio de resultados para "+str(n)+" corridas:")
     print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" ,Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
-    print("Error acumulado: "+str(promedio(err_acum))+ " ,Falso Positivo: "+str(promedio(falso_positivo))+" ,Falso negativo: "+str(promedio(falso_negativo))+"\n")
-    #print(net.get_err())
-    #return promedio(falso_positivo), promedio(falso_negativo)
+    print("Error de entrenamiento: "+str(promedio(err_entrenamiento))+" ,Error de prueba: "+str(promedio(err_acum))+ " ,Falso Positivo: "+str(promedio(falso_positivo))+" ,Falso negativo: "+str(promedio(falso_negativo))+"\n")
+    return promedio(err_entrenamiento), promedio(err_acum), promedio(falso_positivo), promedio(falso_negativo)
 
 # b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
 # b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
@@ -233,7 +234,11 @@ proving = "prueba_B2_barrido_100_por_100.txt"
 
 
 h=open("results.csv", "w")
+h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo\n")
 for i in range(len(alpha)):
     print("alpha: ",alpha[i])
     print("---------------------------------------------------------------------")
-    corrida(data,proving,1,alpha[i],6)
+    n=1
+    a,b,c,d=corrida(data,proving,n,alpha[i],6)
+    h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+"\n")
+h.close()
