@@ -229,7 +229,7 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
 # corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3, 6)
 
 if __name__ == '__main__':
-    alpha = [0.1,0.2,0.3]
+    alpha = [0.01,0.05,0.1,0.15,0.2,0.25,0.3]
     data = "datosP2_AJ2018_B2_N2000.txt"
     proving = "prueba_B2_barrido_100_por_100.txt"
 
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     for i in range(len(alpha)):
         print("alpha: ",alpha[i])
         print("---------------------------------------------------------------------")
-        n=1
+        n=2
         a,b,c,d,e,f,g=corrida(data,proving,n,alpha[i],6)
         h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+" ,"+str(e)+" ,"+str(f)+" ,"+str(g)+"\n")
     h.close()
