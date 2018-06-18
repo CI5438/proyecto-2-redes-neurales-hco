@@ -43,22 +43,13 @@ def read_dataset(filename):
 
 class Network:
 
-    def __init__(self, q):
-        self.alpha = 0.01
-        
+    def __init__(self, q):    
         self.layers = []
         self.weights = []
         self.x0_weights = []
 
         self.init_layers(q)
         self.init_weights(q)
-        #print("capas:")
-        #print(self.layers)
-        #print("pesos:")
-        #print(self.weights)
-        #print("x0:")
-        #print(self.x0_weights)
-        #self.training(0.1)
 
     def init_layers(self, q):
         for i in range(len(q)):
@@ -78,40 +69,58 @@ class Network:
 
         for i in range(1, len(q)):
             #self.x0_weights.append([uniform(-1.0, 1.0) for k in range(q[i])])
-            self.x0_weights.append([uniform(-0.1, 0.1) for k in range(q[i])])
+            self.x0_weights.append([uniform(-0.5, 0.5) for k in range(q[i])])
             #self.x0_weights.append([0.5 for k in range(q[i])])
 
         return True
 
-    def training(self, n, t,goal):
+    def training(self, n, t, goal):
+        #t,goal = read_dataset(nombre)
         it = 1
-        max_it = 5000
+        max_it = 100000
         epsilon = 10**-5
         w_new=[1]
         w_old=[2]
-        #while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)): #para todos los conjuntos de ejemplos
-        while ((it<max_it)):
-            #para cada ejemplo
-            #supongamos que el dato esta almacenado en t
+        while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)): #para todos los conjuntos de ejemplos
+        #while ((it<max_it)):
             for i in range(len(t)):  #para cada ejemplo
                 o=self.get_o(t[i])
                 s=self.get_s(o, goal[i])
-                self.actualizar_pesos(n,s,o)
+                w_old,w_new = self.actualizar_pesos(n,s,o)
 
             it=it+1
-        #print("weights:")
-        #print(self.weights)
-        #print("x0_weights:")
-        #print(self.x0_weights)
+        print("Entrenamiento terminado.\n numero de neuronas capa intermedia: "+str(len(self.layers[1]))+"\n numero de iteraciones: "+str(it)+"\n tasa de aprendizaje: "+str(n))
 
-    def eval(self,example, y):
-        o = self.get_o(example)
-        #print(o)
-        print("Resultado obtenido: ")
-        for i in range(len(o[len(o)-1])):
-            print(str(round(o[len(o)-1][i],0))+" ",end="")
-        print("\nResultado correcto: ")
-        print(y)
+    def eval_area(self, t, goal):
+        dentro=[]
+        afuera=[]
+        aciertos=0
+        desaciertos=0
+        falso_positivo=0
+        falso_negativo=0
+        for i in range(len(t)):
+            o = self.get_o(t[i])
+            correcto=True
+            for j in range(len(o[len(o)-1])):
+                if(round(o[len(o)-1][j],0)!=goal[i][j]):
+                    correcto=False
+            if(round(o[len(o)-1][0],0)==1.0):
+                dentro.append(t[i])
+            else:
+                afuera.append(t[i])
+            if (correcto):
+                aciertos=aciertos+1
+            else:
+                desaciertos=desaciertos+1
+                if (round(o[len(o)-1][0],0)==1.0):
+                    falso_positivo=falso_positivo+1
+                if (round(o[len(o)-1][0],0)==0.0):
+                    falso_negativo=falso_negativo+1
+        efec=aciertos*100/(aciertos+desaciertos)
+        print("\nCasos acertados: "+str(aciertos)+" ,Casos no acertados: "+str(desaciertos)+" Efectividad: "+str(efec)+"%")
+        print("Falso Positivo: "+str(falso_positivo)+" Falso negativo: "+str(falso_negativo)+"\n")
+
+        return dentro, fuera, aciertos, desaciertos, falso_positivo, falso_negativo
 
     def get_o(self,example):
         o=[example]
@@ -119,28 +128,17 @@ class Network:
             aux=[]
             for j in range (len(self.layers[i+1])):#j neuronas de la capa i+1
                 acumulador = self.x0_weights[i][j] #peso de x0
-                #print("Acumulacion inicial: "+str(acumulador))
                 for k in range(len(o[i])):
-                    #print("Estoy multiplicando:"+str(o[i][k])+" y "+str(self.weights[i][k][j]))
                     acumulador = acumulador + o[i][k]*self.weights[i][k][j]
-                #print("Valor final: "+str(acumulador))
                 aux.append(function_s(acumulador))
             o.append(aux)
-
         return o
 
     def get_s(self,o,goal):
-        #print("Valores de o:")
-        #print(o)
-        #print("Valores de w: ")
-        #print(self.weights)
         s=[]
-
         aux=[]
         for i in range(len(self.layers[len(self.layers)-1])): #Ultima capa
             aux.append(o[len(self.layers)-1][i]*(1-o[len(self.layers)-1][i])*(goal[i]-o[len(self.layers)-1][i]))
-        #print("Valores de la ultima capa: ")
-        #print(aux)
         s.append(aux)
 
         for i in range(len(self.layers)-2,-1,-1):#para cada capa en reversa
@@ -149,71 +147,68 @@ class Network:
                 acumulador = 0
                 for k in range(len(self.layers[i+1])): #por cada neurona de la siguiente capa
                     acumulador = acumulador + self.weights[i][j][k]*s[len(s)-1][k]
-                    #print("Acumulador: "+str(acumulador)+"Se le agregó: "+str(self.weights[i][j][k]*s[len(s)-1][k]))
-                #print("Valor de o: "+str(o[i][j]))
                 aux.append(o[i][j]*(1-o[i][j])*acumulador)
-                #print("Valor de S: "+str(o[i][j]*(1-o[i][j])*acumulador))
             s.append(aux)
-        #print("S sin reverso: ")
-        #print(s)
         s.reverse()
-        #print("S con reverso: ")
-        #print(s)
         return s
 
     def actualizar_pesos(self, n,s,o):
-        #print("Valores de o:")
-        #print(o)
-        #print("Valores de s:")
-        #print(s)
-        #print("Valores de w: ")
-        #print(self.weights)
-
+        w_old=[]
+        w_new=[]
         for i in range(len(self.weights)): #para cada capa
             for j in range(len(self.weights[i])): #para cada neurona inicial
                 for k in range(len(self.weights[i][j])): #para cada neurona final
+                    w_old.append(self.weights[i][j][k])
                     #self.weights[i][j][k] = self.weights[i][j][k] + n*s[i+1][k]*self.weights[i][j][k]*o[i][j]
                     self.weights[i][j][k] = self.weights[i][j][k] + n*s[i+1][k]*o[i][j]
-                    #print("Capa: "+str(i)+"Neurona inicial: "+str(j)+"Neurona final: "+str(k))
-                    #print("Valor agregado a peso: "+str(n*s[i+1][k]*self.weights[i][j][k]*o[i][j]))
-
+                    w_new.append(self.weights[i][j][k])
         for i in range(len(self.x0_weights)): #Para cada capa
             for j in range(len(self.x0_weights[i])):#para cada peso hacia esa capa
+                w_old.append(self.x0_weights[i][j])
                 #self.x0_weights[i][j] = self.x0_weights[i][j] + n*s[i+1][j]*self.x0_weights[i][j]
                 self.x0_weights[i][j] = self.x0_weights[i][j] + n*s[i+1][j]
-                #print("Capa: "+str(i)+"Neurona final: "+str(j))
-                #print("Valor agregado a peso: "+str(n*s[i+1][j]*self.x0_weights[i][j]))
+                w_new.append(self.x0_weights[i][j])
+        return w_old, w_new
+
+#n = Network([8, 3, 8])
+#x=[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0]]
+#y=[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0]]
+#n = Network([2, 2, 2])
+#x = [[0,0],[0,1],[1,0],[1,1]]
+#y = [[0,1], [1,0], [1,0], [0,1]]
+
+#n = Network([2,6,1])
+b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
+b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
+prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
+
+#n.training(0.3,x,y)
+#n.training(0.3,nombre)
+print("Nombre del archivo de datos: "+b1_archivos[0])
+x,y = read_dataset(b1_archivos[0])
+datos_prueba_x, datos_prueba_y = read_dataset(prueba_archivos[0])
+dentro=[]
+fuera=[]
+aciertos=[]
+desaciertos=[]
+falso_positivo=[]
+falso_negativo=[]
+for i in range(10):
+    n = Network([2,6,1])
+    n.training(0.3, x, y)
+    a,b,c,d,e,f = n.eval_area(datos_prueba_x, datos_prueba_y)
+    dentro.append(a)
+    fuera.append(b)
+    aciertos.append(c)
+    desaciertos.append(d)
+    falso_positivo.append(e)
+    falso_negativo.append(f)
 
 
 
 
 
-n = Network([8, 3, 8])
-#x,y=read_dataset("datosP2_AJ2018_B1_N1000.txt")
-#print(x)
-#print("y:")
-#print(y)
-#t = [[0,0],[0,1],[1,0],[1,1]]
-#goal = [[0,1], [1,0], [1,0], [0,1]]
-#goal = [[1],[2],[3]]
-
-x=[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0]]
-y=[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0]]
-#print("\nImpresion de evaluaciones sin entrenar")
-#for i in range(5):
-#    print (y_1[i][0])
-    #n.eval(x[i],y[i])
-n.training(0.3,x,y)
-#x_1,y_1=read_dataset("datos_prueba_N2000_B1.txt")
-
-print("Impresion de resultados \n\n\n")
-for i in range(len(x)):
-#    print (y_1[i][0])
-    n.eval(x[i],y[i])
-
-
-#Lectura de datos
-#Verificar el entrenamiento con esos datos
-#todas y cada una de las pruebas que manda caromar
-    #Hacer el trabajo de los datos que ella pide
-#Trabajar con la base de datos que ella pide (Iris data set)
+#print("Impresion de resultados \n\n\n")
+#for i in range(len(datos_prueba_x)):
+#n.eval(x,y)
+#n.eval(datos_prueba_x[i],datos_prueba_y[i])
