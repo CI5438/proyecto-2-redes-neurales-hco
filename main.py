@@ -82,7 +82,7 @@ class Network:
         it = 1
         aciertos=0
         desaciertos=0
-        max_it = 3000
+        max_it = 1000
         epsilon = 10**-5
         w_new=[1]
         w_old=[2]
