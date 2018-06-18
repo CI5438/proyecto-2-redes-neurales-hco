@@ -212,12 +212,21 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
     print("Falso Positivo: "+str(promedio(falso_positivo))+" Falso negativo: "+str(promedio(falso_negativo))+"\n")
 
-b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
-b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
-b1_generados_archivos = ["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt"]
-b2_generados_archivos = ["datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
-prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
-corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3, 6)
+# b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
+# b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
+# b1_generados_archivos = ["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt"]
+# b2_generados_archivos = ["datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
+# prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
+# corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3, 6)
+
+alpha = [0.1,0.2,0.3]
+data = "datosP2_AJ2018_B2_N2000.txt"
+proving = "prueba_B2_barrido_100_por_100.txt"
+
+for i in range(len(alpha)):
+    print("alpha: ",alpha[i])
+    print("---------------------------------------------------------------------")
+    corrida(data,proving,3,alpha[i],6)
 
 
 #n = Network([8, 3, 8])
