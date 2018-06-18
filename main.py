@@ -41,6 +41,12 @@ def read_dataset(filename):
 
     return t,goal
 
+def promedio(x):
+    aux=0.0
+    for i in range(len(x)):
+        aux=aux+x[i]
+    return (aux/len(x))
+
 class Network:
 
     def __init__(self, q):    
@@ -62,7 +68,7 @@ class Network:
             aux = []
             for j in range(q[i]):
                 #aux.append([uniform(-1.0, 1.0) for k in range(q[i+1])])
-                aux.append([uniform(-0.1, 0.1) for k in range(q[i+1])])
+                aux.append([uniform(-0.5, 0.5) for k in range(q[i+1])])
                 #aux.append([0.5 for k in range(q[i+1])])
             
             self.weights.append(aux)
@@ -203,6 +209,11 @@ for i in range(10):
     desaciertos.append(d)
     falso_positivo.append(e)
     falso_negativo.append(f)
+print("\n\nPromedio de resultados para 10 corridas:")
+print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
+print("Falso Positivo: "+str(promedio(falso_positivo))+" Falso negativo: "+str(promedio(falso_negativo))+"\n")
+
+
 
 
 
