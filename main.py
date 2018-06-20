@@ -263,7 +263,7 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     print("\n\nPromedio de resultados para "+str(n)+" corridas:")
     print("Casos acertados: "+str(avg(aciertos))+" ,Casos no acertados: "+str(avg(desaciertos))+" ,Efectividad: "+str(avg(aciertos)*100/(avg(aciertos)+avg(desaciertos)))+"%")
     print("Error de entrenamiento: "+str(avg(err_entrenamiento))+" ,Error de prueba: "+str(avg(err_acum))+ " ,Falso Positivo: "+str(avg(falso_positivo))+" ,Falso negativo: "+str(avg(falso_negativo))+"\n")
-    return avg(err_entrenamiento), avg(err_acum), avg(falso_positivo), avg(falso_negativo), avg(aciertos), avg(desaciertos), (avg(aciertos)*100.0/(avg(aciertos)+avg(desaciertos)))
+    return avg(err_entrenamiento), avg(err_acum), avg(falso_positivo), avg(falso_negativo), avg(aciertos), avg(desaciertos), avg(aciertos)*100/(avg(aciertos)+avg(desaciertos)), dentro, afuera
 
 # b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
 # b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
