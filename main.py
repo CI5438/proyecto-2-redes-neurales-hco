@@ -12,21 +12,43 @@ Authors:
 from random import uniform
 from math import exp, sqrt
 
+"""
+Description: subtracts two vectors.
+
+Parameters:
+    @param a: a vector.
+    @param b: a vector.
+"""
 def sub_vec(a,b):
     c=[]
     for i in range (0,len(a)):
         c.append(a[i]-b[i])
     return c
+"""
+Description: calculates the norm of a vector.
 
+Parameters:
+    @param x: values of dataset variable.
+"""
 def norm2(x):
     plus=0
     for i in range (0, len(x)):
         plus += x[i]**2
     return sqrt(plus)
+"""
+Description: sigmoid unit
 
+Parameters:
+    @param x: value of variable
+"""
 def function_s(x):
     return (1/(1+exp(-x)))
+"""
+Description: gets information about dataset.
 
+Parameters:
+    @param filename: name of de dataset file.
+"""
 def read_dataset(filename):
     dataset = open(filename, "r")
     t = []
@@ -40,15 +62,27 @@ def read_dataset(filename):
     dataset.close()
 
     return t,goal
+"""
+Description: average of elements in array
 
-def promedio(x):
+Parameters:
+    @param x: array
+"""
+def avg(x):
     aux=0.0
     for i in range(len(x)):
         aux=aux+x[i]
     return (aux/len(x))
 
+"""
+Description: class that represents a Multilayer Network
+"""
 class Network:
-
+    """
+    Description: Initializer 
+    Parameters:
+        @param q: array that contains the number of neurons of each layer
+    """
     def __init__(self, q):    
         self.layers = []
         self.weights = []
@@ -57,13 +91,22 @@ class Network:
 
         self.init_layers(q)
         self.init_weights(q)
-
+    """
+    Description: Make the arrray-structure of the Network
+    Parameters:
+        @param q: array that contains the number of neurons of each layer
+    """
     def init_layers(self, q):
         for i in range(len(q)):
             self.layers.append([x for x in range(q[i])])
         
         return True
+    """
+    Description: initialize the random weights of the Network
 
+    Parameters:
+        @param q: array that contains the number of neurons of each layer
+    """
     def init_weights(self, q):
         for i in range(len(q)-1):
             aux = []
@@ -75,11 +118,17 @@ class Network:
             self.x0_weights.append([uniform(-0.5, 0.5) for k in range(q[i])])
 
         return True
+    """
+    Description: Network's training
 
+    Parameters:
+        @param n: learning rate
+        @param t: array of x instances
+        @param goal: array of goal of each instance
+    """
     def training(self, n, t, goal):
-        #t,goal = read_dataset(nombre)
-        self.err = []
-        it = 1
+        self.err = []  #contain training error of each iteration
+        it = 1         #iteration counter
         aciertos=0
         desaciertos=0
         max_it = 1000
@@ -87,11 +136,11 @@ class Network:
         w_new=[1]
         w_old=[2]
         print("Inicio de Entrenamiento")
-        while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)): #para todos los conjuntos de ejemplos
+        while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)):
             acum=0.0
-            for i in range(len(t)):  #para cada ejemplo
-                o=self.get_o(t[i])
-                s=self.get_s(o, goal[i])
+            for i in range(len(t)):                         #for each instance
+                o=self.get_o(t[i])                          #calculate outputs of each neuron
+                s=self.get_s(o, goal[i])                    #calculate error 
                 w_old,w_new = self.actualizar_pesos(n,s,o)
                 if(round(o[len(o)-1][0],0)==goal[i][0]):
                     aciertos=aciertos+1
@@ -102,13 +151,8 @@ class Network:
             self.err.append(acum/2)
             it=it+1
         print("Entrenamiento terminado.\n numero de neuronas capa intermedia: "+str(len(self.layers[1]))+"\n numero de iteraciones: "+str(it)+"\n tasa de aprendizaje: "+str(n))
-        #efec=aciertos*100/(aciertos+desaciertos)
-        #print("Estadisticas durante entrenamiento:")
-        #print("Casos acertados: "+str(aciertos)+" ,Casos no acertados: "+str(desaciertos)+" Efectividad: "+str(efec)+"%")
-        #print("Estadisticas de los datos de entrenamiento: ")
-        #self.eval_area(t,goal)
 
-    def get_err(self    ):
+    def get_err(self):
         return self.err
 
     def eval_area(self, t, goal):
@@ -217,9 +261,9 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
         err_acum.append(g)
         err_entrenamiento.append(net.get_err()[len(net.get_err())-1])
     print("\n\nPromedio de resultados para "+str(n)+" corridas:")
-    print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" ,Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
-    print("Error de entrenamiento: "+str(promedio(err_entrenamiento))+" ,Error de prueba: "+str(promedio(err_acum))+ " ,Falso Positivo: "+str(promedio(falso_positivo))+" ,Falso negativo: "+str(promedio(falso_negativo))+"\n")
-    return promedio(err_entrenamiento), promedio(err_acum), promedio(falso_positivo), promedio(falso_negativo), promedio(aciertos), promedio(desaciertos), promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos))
+    print("Casos acertados: "+str(avg(aciertos))+" ,Casos no acertados: "+str(avg(desaciertos))+" ,Efectividad: "+str(avg(aciertos)*100/(avg(aciertos)+avg(desaciertos)))+"%")
+    print("Error de entrenamiento: "+str(avg(err_entrenamiento))+" ,Error de prueba: "+str(avg(err_acum))+ " ,Falso Positivo: "+str(avg(falso_positivo))+" ,Falso negativo: "+str(avg(falso_negativo))+"\n")
+    return avg(err_entrenamiento), avg(err_acum), avg(falso_positivo), avg(falso_negativo), avg(aciertos), avg(desaciertos), (avg(aciertos)*100.0/(avg(aciertos)+avg(desaciertos)))
 
 # b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
 # b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
