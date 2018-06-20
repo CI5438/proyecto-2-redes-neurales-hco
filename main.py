@@ -108,7 +108,7 @@ class Network:
         #print("Estadisticas de los datos de entrenamiento: ")
         #self.eval_area(t,goal)
 
-    def get_err(self    ):
+    def get_err(self):
         return self.err
 
     def eval_area(self, t, goal):
@@ -219,7 +219,7 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     print("\n\nPromedio de resultados para "+str(n)+" corridas:")
     print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" ,Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
     print("Error de entrenamiento: "+str(promedio(err_entrenamiento))+" ,Error de prueba: "+str(promedio(err_acum))+ " ,Falso Positivo: "+str(promedio(falso_positivo))+" ,Falso negativo: "+str(promedio(falso_negativo))+"\n")
-    return promedio(err_entrenamiento), promedio(err_acum), promedio(falso_positivo), promedio(falso_negativo), promedio(aciertos), promedio(desaciertos), promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos))
+    return promedio(err_entrenamiento), promedio(err_acum), promedio(falso_positivo), promedio(falso_negativo), promedio(aciertos), promedio(desaciertos), promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)), dentro, afuera
 
 # b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
 # b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
