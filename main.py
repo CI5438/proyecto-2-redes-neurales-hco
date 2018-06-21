@@ -12,21 +12,43 @@ Authors:
 from random import uniform
 from math import exp, sqrt
 
+"""
+Description: subtracts two vectors.
+
+Parameters:
+    @param a: a vector.
+    @param b: a vector.
+"""
 def sub_vec(a,b):
     c=[]
     for i in range (0,len(a)):
         c.append(a[i]-b[i])
     return c
+"""
+Description: calculates the norm of a vector.
 
+Parameters:
+    @param x: values of dataset variable.
+"""
 def norm2(x):
     plus=0
     for i in range (0, len(x)):
         plus += x[i]**2
     return sqrt(plus)
+"""
+Description: sigmoid unit
 
+Parameters:
+    @param x: value of variable
+"""
 def function_s(x):
     return (1/(1+exp(-x)))
+"""
+Description: gets information about dataset.
 
+Parameters:
+    @param filename: name of de dataset file.
+"""
 def read_dataset(filename):
     dataset = open(filename, "r")
     t = []
@@ -40,15 +62,27 @@ def read_dataset(filename):
     dataset.close()
 
     return t,goal
+"""
+Description: average of elements in array
 
-def promedio(x):
+Parameters:
+    @param x: array
+"""
+def avg(x):
     aux=0.0
     for i in range(len(x)):
         aux=aux+x[i]
     return (aux/len(x))
 
+"""
+Description: class that represents a Multilayer Network
+"""
 class Network:
-
+    """
+    Description: Initializer 
+    Parameters:
+        @param q: array that contains the number of neurons of each layer
+    """
     def __init__(self, q):    
         self.layers = []
         self.weights = []
@@ -57,13 +91,22 @@ class Network:
 
         self.init_layers(q)
         self.init_weights(q)
-
+    """
+    Description: Make the arrray-structure of the Network
+    Parameters:
+        @param q: array that contains the number of neurons of each layer
+    """
     def init_layers(self, q):
         for i in range(len(q)):
             self.layers.append([x for x in range(q[i])])
         
         return True
+    """
+    Description: initialize the random weights of the Network
 
+    Parameters:
+        @param q: array that contains the number of neurons of each layer
+    """
     def init_weights(self, q):
         for i in range(len(q)-1):
             aux = []
@@ -75,42 +118,103 @@ class Network:
             self.x0_weights.append([uniform(-0.5, 0.5) for k in range(q[i])])
 
         return True
+    """
+    Description: Network's training
 
+    Parameters:
+        @param n: learning rate
+        @param t: array of x instances
+        @param goal: array of goal of each instance
+    """
     def training(self, n, t, goal):
-        #t,goal = read_dataset(nombre)
-        self.err = []
-        it = 1
-        aciertos=0
-        desaciertos=0
-        max_it = 3000
+        self.err = []  #contain training error of each iteration
+        it = 1         #iteration counter
+        max_it = 1000
         epsilon = 10**-5
         w_new=[1]
         w_old=[2]
         print("Inicio de Entrenamiento")
-        while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)): #para todos los conjuntos de ejemplos
+        while ((norm2(sub_vec(w_new,w_old))>epsilon) and (it<max_it)):
             acum=0.0
-            for i in range(len(t)):  #para cada ejemplo
-                o=self.get_o(t[i])
-                s=self.get_s(o, goal[i])
-                w_old,w_new = self.actualizar_pesos(n,s,o)
-                if(round(o[len(o)-1][0],0)==goal[i][0]):
-                    aciertos=aciertos+1
-                else:
-                    desaciertos=desaciertos+1
-                for j in range(len(o[len(o)-1])):
+            for i in range(len(t)):                         #for each instance
+                o=self.get_o(t[i])                          #calculate outputs of each neuron
+                s=self.get_s(o, goal[i])                    #calculate error of each neuron
+                w_old,w_new = self.update_weights(n,s,o)  #update weights
+                for j in range(len(o[len(o)-1])):           #accumulate the error fo each instance
                     acum = acum + ((o[len(o)-1][j]-goal[i][j])**2)
             self.err.append(acum/2)
             it=it+1
         print("Entrenamiento terminado.\n numero de neuronas capa intermedia: "+str(len(self.layers[1]))+"\n numero de iteraciones: "+str(it)+"\n tasa de aprendizaje: "+str(n))
-        #efec=aciertos*100/(aciertos+desaciertos)
-        #print("Estadisticas durante entrenamiento:")
-        #print("Casos acertados: "+str(aciertos)+" ,Casos no acertados: "+str(desaciertos)+" Efectividad: "+str(efec)+"%")
-        #print("Estadisticas de los datos de entrenamiento: ")
-        #self.eval_area(t,goal)
-
-    def get_err(self    ):
+    """
+    Description: returns training error's array
+    """
+    def get_err(self):
         return self.err
+    """
+    Description: get ouputs 
 
+    Parameters:
+        @ param instance: instance 
+    """
+    def get_o(self,instance):
+        o=[instance]
+        for i in range(len(self.weights)):#i capas de la red
+            aux=[]
+            for j in range (len(self.layers[i+1])):#j neuronas de la capa i+1
+                acumulador = self.x0_weights[i][j] #peso de x0
+                for k in range(len(o[i])):
+                    acumulador = acumulador + o[i][k]*self.weights[i][k][j]
+                aux.append(function_s(acumulador))
+            o.append(aux)
+        return o
+    """
+    Description: get error 
+
+    Parameters:
+        @ param o: array of outputs
+        @ param goal: array of goal of the last layer 
+    """
+    def get_s(self,o,goal):
+        s=[]
+        aux=[]
+        for i in range(len(self.layers[len(self.layers)-1])): #Last layer
+            aux.append(o[len(self.layers)-1][i]*(1-o[len(self.layers)-1][i])*(goal[i]-o[len(self.layers)-1][i]))
+        s.append(aux)
+
+        for i in range(len(self.layers)-2,-1,-1):#for each layer in reverse
+            aux=[]
+            for j in range(len(self.layers[i])):#for each neuron of the layer
+                accum = 0
+                for k in range(len(self.layers[i+1])): #for each neuron of the following layer
+                    accum = accum + self.weights[i][j][k]*s[len(s)-1][k]
+                aux.append(o[i][j]*(1-o[i][j])*accum)
+            s.append(aux)
+        s.reverse()
+        return s
+
+    def update_weights(self, n,s,o):
+        w_old=[]
+        w_new=[]
+        for i in range(len(self.weights)): #for each layer
+            for j in range(len(self.weights[i])): #for each in neuron
+                for k in range(len(self.weights[i][j])): #for each out neuron
+                    w_old.append(self.weights[i][j][k])
+                    self.weights[i][j][k] = self.weights[i][j][k] + n*s[i+1][k]*o[i][j]
+                    w_new.append(self.weights[i][j][k])
+        for i in range(len(self.x0_weights)): #for each layer
+            for j in range(len(self.x0_weights[i])):#for each weight to that layer
+                w_old.append(self.x0_weights[i][j])
+                self.x0_weights[i][j] = self.x0_weights[i][j] + n*s[i+1][j]
+                w_new.append(self.x0_weights[i][j])
+        return w_old, w_new
+
+    """
+    Description: instance evaluation of problem 1 
+
+    Parameters:
+        @param t:x instance
+        @param goal: goal of instance
+    """
     def eval_area(self, t, goal):
         dentro=[]
         fuera=[]
@@ -145,52 +249,6 @@ class Network:
 
         return dentro, fuera, aciertos, desaciertos, falso_positivo, falso_negativo, err_acum
 
-    def get_o(self,example):
-        o=[example]
-        for i in range(len(self.weights)):#i capas de la red
-            aux=[]
-            for j in range (len(self.layers[i+1])):#j neuronas de la capa i+1
-                acumulador = self.x0_weights[i][j] #peso de x0
-                for k in range(len(o[i])):
-                    acumulador = acumulador + o[i][k]*self.weights[i][k][j]
-                aux.append(function_s(acumulador))
-            o.append(aux)
-        return o
-
-    def get_s(self,o,goal):
-        s=[]
-        aux=[]
-        for i in range(len(self.layers[len(self.layers)-1])): #Ultima capa
-            aux.append(o[len(self.layers)-1][i]*(1-o[len(self.layers)-1][i])*(goal[i]-o[len(self.layers)-1][i]))
-        s.append(aux)
-
-        for i in range(len(self.layers)-2,-1,-1):#para cada capa en reversa
-            aux=[]
-            for j in range(len(self.layers[i])):#paara cada neurona de la capa
-                acumulador = 0
-                for k in range(len(self.layers[i+1])): #por cada neurona de la siguiente capa
-                    acumulador = acumulador + self.weights[i][j][k]*s[len(s)-1][k]
-                aux.append(o[i][j]*(1-o[i][j])*acumulador)
-            s.append(aux)
-        s.reverse()
-        return s
-
-    def actualizar_pesos(self, n,s,o):
-        w_old=[]
-        w_new=[]
-        for i in range(len(self.weights)): #para cada capa
-            for j in range(len(self.weights[i])): #para cada neurona inicial
-                for k in range(len(self.weights[i][j])): #para cada neurona final
-                    w_old.append(self.weights[i][j][k])
-                    self.weights[i][j][k] = self.weights[i][j][k] + n*s[i+1][k]*o[i][j]
-                    w_new.append(self.weights[i][j][k])
-        for i in range(len(self.x0_weights)): #Para cada capa
-            for j in range(len(self.x0_weights[i])):#para cada peso hacia esa capa
-                w_old.append(self.x0_weights[i][j])
-                self.x0_weights[i][j] = self.x0_weights[i][j] + n*s[i+1][j]
-                w_new.append(self.x0_weights[i][j])
-        return w_old, w_new
-
 def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     print("Nombre del archivo de datos: "+datos)
     x,y = read_dataset(datos)
@@ -217,28 +275,23 @@ def corrida(datos, prueba, n, tasa, neuronas_intermedia):
         err_acum.append(g)
         err_entrenamiento.append(net.get_err()[len(net.get_err())-1])
     print("\n\nPromedio de resultados para "+str(n)+" corridas:")
-    print("Casos acertados: "+str(promedio(aciertos))+" ,Casos no acertados: "+str(promedio(desaciertos))+" ,Efectividad: "+str(promedio(aciertos)*100/(promedio(aciertos)+promedio(desaciertos)))+"%")
-    print("Error de entrenamiento: "+str(promedio(err_entrenamiento))+" ,Error de prueba: "+str(promedio(err_acum))+ " ,Falso Positivo: "+str(promedio(falso_positivo))+" ,Falso negativo: "+str(promedio(falso_negativo))+"\n")
-    return promedio(err_entrenamiento), promedio(err_acum), promedio(falso_positivo), promedio(falso_negativo)
+    print("Casos acertados: "+str(avg(aciertos))+" ,Casos no acertados: "+str(avg(desaciertos))+" ,Efectividad: "+str(avg(aciertos)*100/(avg(aciertos)+avg(desaciertos)))+"%")
+    print("Error de entrenamiento: "+str(avg(err_entrenamiento))+" ,Error de prueba: "+str(avg(err_acum))+ " ,Falso Positivo: "+str(avg(falso_positivo))+" ,Falso negativo: "+str(avg(falso_negativo))+"\n")
+    return avg(err_entrenamiento), avg(err_acum), avg(falso_positivo), avg(falso_negativo), avg(aciertos), avg(desaciertos), avg(aciertos)*100/(avg(aciertos)+avg(desaciertos))
+#h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, num_neurona, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo, casos_acertados, casos_no_acertados, efectividad\n")
 
-# b1_archivos = ["datosP2_AJ2018_B1_N500.txt","datosP2_AJ2018_B1_N1000.txt","datosP2_AJ2018_B1_N2000.txt"]
-# b2_archivos = ["datosP2_AJ2018_B2_N500.txt","datosP2_AJ2018_B2_N1000.txt","datosP2_AJ2018_B2_N2000.txt"]
-# b1_generados_archivos = ["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt"]
-# b2_generados_archivos = ["datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
-# prueba_archivos = ["prueba_B1_barrido_100_por_100.txt","prueba_B2_barrido_100_por_100.txt"]
-# corrida(b1_archivos[0],prueba_archivos[0], 3, 0.3, 6)
-
-alpha = [0.1,0.2,0.3]
-data = "datosP2_AJ2018_B2_N2000.txt"
-proving = "prueba_B2_barrido_100_por_100.txt"
+if __name__ == '__main__':
+    alpha = [0.01,0.05,0.1,0.15,0.2,0.25,0.3]
+    data = "datosP2_AJ2018_B2_N2000.txt"
+    proving = "prueba_B2_barrido_100_por_100.txt"
 
 
-h=open("results.csv", "w")
-h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo\n")
-for i in range(len(alpha)):
-    print("alpha: ",alpha[i])
-    print("---------------------------------------------------------------------")
-    n=1
-    a,b,c,d=corrida(data,proving,n,alpha[i],6)
-    h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+"\n")
-h.close()
+    h=open("results.csv", "w")
+    h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo, casos_acertados, casos_no_acertados, efectividad\n")
+    for i in range(len(alpha)):
+        print("alpha: ",alpha[i])
+        print("---------------------------------------------------------------------")
+        n=2
+        a,b,c,d,e,f,g=corrida(data,proving,n,alpha[i],6)
+        h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+" ,"+str(e)+" ,"+str(f)+" ,"+str(g)+"\n")
+    h.close()
