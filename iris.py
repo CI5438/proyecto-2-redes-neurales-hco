@@ -70,22 +70,61 @@ def split(df, p):
     
     return df.sample(n=training_size)
 
-def process_data_for_training(df):
-    x = []
-    y = []
+def calculate_fit(row, fitset, size)
+    for col in range(size):
+        fitset.append(row[col])
+    
+    return fitset
+
+
+def fit_data(df, ys=1):
+    """
+    """
+    x, y = [], []
+    ncols = len(df.columns)
+    xsize = ncols-ys
+
+    # Calculate x, y subsets 
+    for index, row in df.iterrows():
+        xdata, ydata = [], []
+
+        # Calculate x subarray for current row
+        xdata = calculate_fit(row, xdata, xsize)
+        x.append(xdata)
+
+        # Calculate y subarray for current row
+        ydata = calculate_fit(row, ydata, ys)
+        y.append(ydata)
+
     return x, y
 
-def start_training(df):
+def print_info(p, x, n, y):
+    print("\nCreando una red con las siguientes características") 
+    print("Neuronas: %d entrada, %d capa oculta, %d salida" % (x, n, y) )
+
+def start_training(df, ys=1):
+    """
+    """
     data_size_percentages = [50, 60, 70, 80, 90]
 
     for p in data_size_percentages:
+        print("\nEntrenando con el %d porciento de los datos" % p)
         # Split data in p percentage and prepare it to the
         # data type supported by Network Class
         training_df = split(df, p)
-        #x, y = process_data_for_training(df)
+
+        # Fit the data to the format supported by the
+        # Network class 
+        x, y = fit_data(training_df, ys)
+        xs = len(x[0])
+        
         for n in range(4, 11):
-            network = Network([4, n, 1])
-            #network.training(n, x, y)
+            print_info(p, xs, n, ys)
+            network = Network([xs, n, ys])
+            network.training(1, x, y)
+        print("-------------------------------------------")
+
+    return 
 
 def init():
     """Main Program. Executes methods for solving third question.
@@ -95,8 +134,8 @@ def init():
 
     setosa_df = setosa_binary_classifier(df)
     
-    start_training(setosa_df)
-    start_training(df)
+    start_training(setosa_df, 1)
+    start_training(df, 3)
 
 if __name__ == '__main__':
     init()
