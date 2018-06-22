@@ -70,12 +70,37 @@ def split(df, p):
     
     return df.sample(n=training_size)
 
-def calculate_fit(row, fitset, size)
+def calculate_fit(row, fitset, size):
     for col in range(size):
         fitset.append(row[col])
     
     return fitset
 
+def teacher_output(val):
+    return val
+
+def net_output(network, x_instance):
+    return network.get_o(x_instance)
+
+def backpropagation(network, x, y):
+    hits, failures, n_inputs = 0, 0, len(x)
+    for i in range(n_inputs):
+        # We assume the prediction is going to succeed.
+        prediction, hit = net_output(network, x[i]), True
+        pos_next_to_last = len(prediction) - 1
+        N = len(prediction[pos_next_to_last])
+        # Round the prediction to zero because the
+        # decisition is binary.
+        for j in range(N):
+            prediction_rounded = round(prediction[pos_next_to_last][j], 0)
+            actual = teacher_output(y[i][j])
+            if (prediction_rounded != actual):
+                hit = False
+            continue
+        if hit: hits += 1
+        else: failures += 1
+    efectiveness = hits*100/(hits+failures)
+    print("Acertados: %d, No Acertados: %d, Efectividad: %d" % (hits, failures, efectiveness) )
 
 def fit_data(df, ys=1):
     """
@@ -122,9 +147,10 @@ def start_training(df, ys=1):
             print_info(p, xs, n, ys)
             network = Network([xs, n, ys])
             network.training(1, x, y)
+            backpropagation(network, x, y)
         print("-------------------------------------------")
 
-    return 
+    return network, x, y
 
 def init():
     """Main Program. Executes methods for solving third question.
@@ -133,9 +159,9 @@ def init():
     df = dummies(df)
 
     setosa_df = setosa_binary_classifier(df)
-    
-    start_training(setosa_df, 1)
-    start_training(df, 3)
+
+    network, x, y = start_training(setosa_df, 1)
+    #start_training(df, 3)
 
 if __name__ == '__main__':
     init()
