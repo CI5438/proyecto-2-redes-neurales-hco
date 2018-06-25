@@ -145,8 +145,11 @@ def evaluate(network, x, y, is_binary=True):
             if (is_binary and prediction_rounded == 1.0): false_positive += 1
             elif (is_binary and prediction_rounded == 0.0): false_negative += 1
     
-    efectiveness = hits*100/(hits+failures)
-    print("Acertados: %d, No Acertados: %d, Efectividad: %d" % (hits, failures, efectiveness) )
+    accuracy = hits*100/(hits+failures)
+    error = 100 - accuracy
+    print("Acertados: %d, No Acertados: %d" % (hits, failures) )
+    print("Precisión: %d%%, Error: %d%%" % (accuracy, error) )
+    
     if (is_binary):
         print("Falsos positivos: %d, Falsos negativos: %d" % (false_positive, false_negative) )
     
@@ -181,6 +184,10 @@ def fit_data(df, ys=1):
 def print_info(x, n, y):
     """Outputs information of the Network that is going to be
     build.
+
+    @param x, the number of neurons of the input layer
+    @param n, the number of neurons of the hidden layer
+    @param y, the number of neurons of the output layer
     """
     print("\nCreando una red con las siguientes características:") 
     print("Neuronas por capa: %d entrada, %d intermedia, %d salida" % (x, n, y) )
@@ -226,7 +233,9 @@ def init():
 
     setosa_df = setosa_binary_classifier(df)
 
-    #start_evaluation(setosa_df, 1)
+    print("Clasificador binario")
+    start_evaluation(setosa_df, 1)
+    print("Clasificador de las tres clases")
     start_evaluation(df, 3)
 
 if __name__ == '__main__':
