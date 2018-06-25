@@ -133,7 +133,7 @@ def evaluate(network, x, y, is_binary=True):
         prediction, hit = net_output(network, x[i]), True
         last_element = len(prediction) - 1
         n_predictions = len(prediction[last_element])
-
+        
         # Round the prediction to zero because the decisition is binary.
         for j in range(n_predictions):
             prediction_rounded = round(prediction[last_element][j], 0)
@@ -152,7 +152,7 @@ def evaluate(network, x, y, is_binary=True):
     accuracy = hits*100/(hits+failures)
     error = 100 - accuracy
     print("Acertados: %d, No Acertados: %d" % (hits, failures) )
-    print("Precisión: %d%%, Error: %d%%" % (accuracy, error) )
+    print("Precisión: %f%%, Error: %f%%" % (accuracy, error) )
     
     if (is_binary):
         print("Falsos positivos: %d, Falsos negativos: %d" % (false_positive, false_negative) )
@@ -239,8 +239,8 @@ def init():
 
     setosa_df = setosa_binary_classifier(df)
 
-    print("Clasificador binario")
-    start_evaluation(setosa_df, 1)
+    #print("Clasificador binario")
+    #start_evaluation(setosa_df, 1)
     print("Clasificador de las tres clases")
     start_evaluation(df, 3)
 
