@@ -17,6 +17,10 @@ from main import *
 
 def drop_column(df, column):
     """Remove column by specifying label names.
+
+    @param df, pandas dataframe to drop the column
+    @param column, name of the column to drop
+    @return pandas dataframe with the dropped column
     """
     try:
         df = df.drop(column, axis=1)
@@ -162,6 +166,8 @@ def fit_data(df, ys=1):
     @param df, panda dataframe
     @param ys, num of values to be predicted. This value is bigger
                than one if the clasification is not binary.
+    @return x, data fitted in arrays
+    @return y, goal data fitted in arrays 
     """
     x, y = [], []
     ncols = len(df.columns)
