@@ -1,64 +1,39 @@
 # Proyecto 2
 
-## Redes Neurales 
+## Redes Neurales
 
 ### Resumen
 
-El objetivo de este proyecto es la familiarización del estudiante con el algoritmo de backpropagation sobre redes neuronales del tipo feedforward,  así como su uso sobre diversos conjuntos de datos. Para ello se pide que se implemente dicho algoritmo en el lenguaje imperativo de su preferencia; para luego evaluar esa implementación sobre 2 conjuntos de datos: uno generado artificialmente y el clásico Iris Dataset.
+El siguiente estudio consiste en implementar el algoritmo de Backpropagation sobre una Red Neuronal Multicapa para entrenar dos conjuntos de datos. Por una parte se tienen puntos que se ubican dentro o fuera del área B1 o B2 de un circulo con radio 6 y 8 respectivamente. Para dicho conjunto de datos se realizaran pruebas y análisis de los resultados para obtener el mejor conjunto de entrenamiento de acuerdo a una tasa de aprendizaje y cantidad de neuronas en la capa intermedia que mejor se adapte al problema. Por otro lado, se tiene el conjunto de datos clásico Iris dataset introducido por Ronald Fisher en 1936. Por una parte, se prueba el conjunto utilizando una clasificación binaria que separa Iris setosa del resto. Por otra parte, se prueba el mismo conjunto separando las tres clases. Ambas pruebas son hechas con porcentajes de datos de entrenamiento de 50, 60, 70, 80 y 90 y con redes de 4 a 10 neuronas en la capa intermedia.
 
+### Requisitos
 
-### Descripción
+El proyecto se encuentra implementado en el lenguaje Python en su versión 3.
 
-1. Implemente el algoritmo de backpropagation sobre una red feedforward multicapa.
+Las librerías utilizadas en el proyecto son math, random, las cuales están incluidas en la instalación del lenguaje y pandas que es instalable a través del Python package manager (pip)
 
-2. Pruebe su red con el siguiente experimento de clasificación de patrones: Se pretende lograr la clasificación de puntos en un plano pertenecientes a dos regiones predeterminadas (A  y B), como se muestran en la siguiente figura:
+```bash
+pip install pandas
+```
 
-circulo.jpg
+### Ejecución
 
-El área A  es el cuadrado cuya diagonal es el segmento de recta que une los puntos (0,  0) y (20,  20), menos el área que ocupa B .
-Trabajaremos sobre dos áreas para B:
-1. El área B1 que esta delimitada por una circunferencia centrada en (10,10) con radio 6. La ecuación canónica de esta circunferencia es:  (x - 10)2 + (y -10)2 = 36
+Ubicarse en el directorio del proyecto y ejecutar el comando correspondiente a la pregunta que quiere resolver (suponiendo que python3 es el comando para ejecutar el intérprete de Python en su versión 3)
 
-2. El área B2  que esta delimitada por una circunferencia centrada en (10,10) con radio 8. La ecuación canónica de esta circunferencia es:  (x - 10)2 + (y -10)2 = 64
+**Solución de la pregunta dos:**
 
-Se entiende por patrón (o ejemplo un punto (x, y) dentro del rectángulo, etiquetado con el área al que este pertenece (A  o B ).
-Se le suministrarán, para  cada configuración (de cuadrados y círculos), tres conjuntos de entrenamiento de 500, 1000 y 2000 patrones ya clasificados con los que usted deberá entrenar su red. Los puntos en los datos que se le proporcionan fueron generados uniformemente sobre todo el cuadrado. Estos conjuntos de datos se encuentran en el repositorio de github del proyecto, y tienen como nombre "datosP2_AJ2018_BX_NY.txt, donde X puede ser B1 o B2, y Y es el cantidad de datos en el archivo. La visualización de de estos datos para N500, con los ejemplos etiquetados "círculo" de color azul y los "no círculo" en rojo, pueden verlas en las imágenes datos_B1_500.png y datos_B2_500.png  
-Adicionalmente usted debe generar otros conjuntos de datos (500, 1000 y 2000 patrones para cada configuración) de manera que el número de patrones que corresponde cada área sea igual.
-Cada red ha de entrenarse de tal forma que se aprendan la clasificación correcta de los puntos.
-Usando 6 neuronas en la capa intermedia y el conjuntos de datos de 2000 patrones suministrado el área B2,  pruebe varios valores para la tasa de aprendizaje y escoja el mejor para usarlo en la prueba de variación de número de neuronas en la capa intermedia.
-Pruebe con redes de 2 a 10 neuronas en la capa intermedia, para cada configuración y con los 6 conjuntos de entrenamiento explicados anteriormente . Reporte los errores de entrenamiento  de cada combinación de alternativas (Número de neuronas x conjunto de entrenamiento).
-Tome como conjunto de prueba los puntos (aproximadamente 10.000 = 100 x 100) de un barrido completo de la región cuadrada correctamente etiquetados. Evalúe las configuraciones en base a: 1) error en entrenamiento, 2) error en prueba, 3) falsos positivos, 4) falsos negativos.
-Para el mejor conjunto de entrenamiento encontrado. Muestre para cada red (difiere en el número de neuronas):
-Muestre la gráfica de convergencia
-Muestre visualmente la validación del aprendizaje, tomando puntos de un barrido completo de la región cuadrada y coloreando cada punto con un color dependiendo de la clasificación que arroje la red.
-Recuerde que por ser las redes neurales algoritmos estocásticos la evaluación de las configuraciones debe hacerse sobre los promedios de al menos 10 corridas. 
-OPCIONAL: Pruebe con una red de dos capas.
- 
+```bash
+python3 clasificacion.py
+```
 
-3.  Entrene su red para construir dos clasificadores sobre los datos del conjunto Iris Data Set
+**Solución de la pregunta tres:**
 
-(http://archive.ics.uci.edu/ml/datasets/Iris ): 
+```bash
+python3 iris.py
+```
 
-3.1 Uno que separe las \Iris Setosa" del resto (Clasificador binario)
+### Autores
 
-3.2. Uno que separe cada una de las 3 clases.
-
-Pruebe con redes de 4 a 10 neuronas en la capa intermedia, usando como conjunto de entrenamiento los siguientes porcentajes de los datos: 50 %, 60 %, 70 %, 80 %, 90 %.
-Muestre sus resultados. 
-OPCIONAL: Pruebe con una red de dos capas.
-
- 
-
-### Entrega
-
-La fecha de entrega sugerida es el día Miércoles 13 de Junio, a la hora de clases (1:30 am).
-
-Deberán dejar en el repositorio de github de su grupo su código y un breve informe. El link para esta asignación en github es: https://classroom.github.com/g/Yxy2RdKS
-
-Cada grupo deberá entregar una copia impresa de su informe. El informe debe ser breve y conciso, debe incluir:
-
-Resumen.
-Detalles de implementación/experimentación. (Lenguaje usado, detalles del algoritmo, etc). 
-Presentación y discusión de los resultados (En base a los elementos requeridos para cada conjunto de datos)
-Conclusiones
-Referencias
+* David Cabeza
+* Fabiola Martínez
+* Rafael Blanco
