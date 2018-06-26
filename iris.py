@@ -239,8 +239,9 @@ def init():
 
     setosa_df = setosa_binary_classifier(df)
 
-    #print("Clasificador binario")
-    #start_evaluation(setosa_df, 1)
+    print("Clasificador binario")
+    start_evaluation(setosa_df, 1)
+    
     print("Clasificador de las tres clases")
     start_evaluation(df, 3)
 
