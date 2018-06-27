@@ -12,8 +12,18 @@ Authors:
 
 from random import uniform
 
+"""
+Description: verify if a point on the plane is part of a circle.
+
+Parameters:
+    @param x: x coord.
+    @param y: y coord.
+    @param radio: circle's radio
+"""
 def pertenece_B(x,y,radio):
 	return ((x-10)**2) + ((y-10)**2) <= (radio**2)
+"""
+"""
 
 def generador_barrido_zona(n,x1,x2,y1,y2,radio, nombre):
 	division_eje_x=(x2-x1)/(n-1)
@@ -57,7 +67,7 @@ def generador(n, radio, nombre):
 		h.write(str(b[i][0])+' '+str(b[i][1])+" "+str(1)+'\n')
 		h.write(str(a[i][0])+' '+str(a[i][1])+" "+str(0)+'\n')
 	h.close()
-	
+
 n=[500,1000,2000, 500, 1000, 2000]
 radio=[6,6,6,8,8,8]
 nombre=["datos_entrenamiento_N500_B1.txt", "datos_entrenamiento_N1000_B1.txt", "datos_entrenamiento_N2000_B1.txt","datos_entrenamiento_N500_B2.txt", "datos_entrenamiento_N1000_B2.txt", "datos_entrenamiento_N2000_B2.txt"]
