@@ -59,6 +59,18 @@ def read_dataset(filename):
 
     return t,goal
 
+"""
+Description: average of elements in array
+
+Parameters:
+    @param x: array
+"""
+def avg(x):
+    aux=0.0
+    for i in range(len(x)):
+        aux=aux+x[i]
+    return (aux/len(x))
+
 def corrida(datos, prueba, n, tasa, neuronas_intermedia):
     print("Nombre del archivo de datos: "+datos)
     x,y = read_dataset(datos)

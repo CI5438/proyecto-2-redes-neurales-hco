@@ -43,17 +43,6 @@ Parameters:
 """
 def function_s(x):
     return (1/(1+exp(-x)))
-"""
-Description: average of elements in array
-
-Parameters:
-    @param x: array
-"""
-def avg(x):
-    aux=0.0
-    for i in range(len(x)):
-        aux=aux+x[i]
-    return (aux/len(x))
 
 """
 Description: class that represents a Multilayer Network
