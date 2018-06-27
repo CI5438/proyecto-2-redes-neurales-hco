@@ -10,7 +10,7 @@ Authors:
     Fabiola Martinez 1310838
 """
 
-from main import *
+from neuralnetworkbp import *
 from generador import *
 #import matplotlib.pyplot as plt
 
