@@ -44,25 +44,6 @@ Parameters:
 def function_s(x):
     return (1/(1+exp(-x)))
 """
-Description: gets information about dataset.
-
-Parameters:
-    @param filename: name of de dataset file.
-"""
-def read_dataset(filename):
-    dataset = open(filename, "r")
-    t = []
-    goal=[]
-
-    lines=dataset.readlines()
-    
-    for line in lines:
-        t.append([float(line.split(' ')[0]),float(line.split(' ')[1])])
-        goal.append([float((line.split(' ')[2]).rstrip())]) # removing /n
-    dataset.close()
-
-    return t,goal
-"""
 Description: average of elements in array
 
 Parameters:
@@ -79,11 +60,11 @@ Description: class that represents a Multilayer Network
 """
 class Network:
     """
-    Description: Initializer 
+    Description: Initializer
     Parameters:
         @param q: array that contains the number of neurons of each layer
     """
-    def __init__(self, q):    
+    def __init__(self, q):
         self.layers = []
         self.weights = []
         self.x0_weights = []
@@ -99,7 +80,7 @@ class Network:
     def init_layers(self, q):
         for i in range(len(q)):
             self.layers.append([x for x in range(q[i])])
-        
+
         return True
     """
     Description: initialize the random weights of the Network
@@ -111,7 +92,7 @@ class Network:
         for i in range(len(q)-1):
             aux = []
             for j in range(q[i]):
-                aux.append([uniform(-0.5, 0.5) for k in range(q[i+1])])        
+                aux.append([uniform(-0.5, 0.5) for k in range(q[i+1])])
             self.weights.append(aux)
 
         for i in range(1, len(q)):
@@ -151,10 +132,10 @@ class Network:
     def get_err(self):
         return self.err
     """
-    Description: get ouputs 
+    Description: get ouputs
 
     Parameters:
-        @ param instance: instance 
+        @ param instance: instance
     """
     def get_o(self,instance):
         o=[instance]
@@ -168,11 +149,11 @@ class Network:
             o.append(aux)
         return o
     """
-    Description: get error 
+    Description: get error
 
     Parameters:
         @ param o: array of outputs
-        @ param goal: array of goal of the last layer 
+        @ param goal: array of goal of the last layer
     """
     def get_s(self,o,goal):
         s=[]
@@ -209,7 +190,7 @@ class Network:
         return w_old, w_new
 
     """
-    Description: instance evaluation of problem 1 
+    Description: instance evaluation of problem 1
 
     Parameters:
         @param t:x instance
@@ -248,50 +229,3 @@ class Network:
         print("Error acumulado: "+str(err_acum)+" ,Falso Positivo: "+str(falso_positivo)+" ,Falso negativo: "+str(falso_negativo)+"\n")
 
         return dentro, fuera, aciertos, desaciertos, falso_positivo, falso_negativo, err_acum
-
-def corrida(datos, prueba, n, tasa, neuronas_intermedia):
-    print("Nombre del archivo de datos: "+datos)
-    x,y = read_dataset(datos)
-    datos_prueba_x, datos_prueba_y = read_dataset(prueba)
-    dentro=[] #dentro[0]
-    fuera=[]
-    aciertos=[]
-    desaciertos=[]
-    falso_positivo=[]
-    falso_negativo=[]
-    err_acum=[]
-    err_entrenamiento=[]
-    for i in range(n):
-        net = Network([2,neuronas_intermedia,1])
-        net.training(tasa, x, y)
-        print("Estadistica de datos de prueba: ")
-        a,b,c,d,e,f,g = net.eval_area(datos_prueba_x, datos_prueba_y)
-        dentro.append(a)
-        fuera.append(b)
-        aciertos.append(c)
-        desaciertos.append(d)
-        falso_positivo.append(e)
-        falso_negativo.append(f)
-        err_acum.append(g)
-        err_entrenamiento.append(net.get_err()[len(net.get_err())-1])
-    print("\n\nPromedio de resultados para "+str(n)+" corridas:")
-    print("Casos acertados: "+str(avg(aciertos))+" ,Casos no acertados: "+str(avg(desaciertos))+" ,Efectividad: "+str(avg(aciertos)*100/(avg(aciertos)+avg(desaciertos)))+"%")
-    print("Error de entrenamiento: "+str(avg(err_entrenamiento))+" ,Error de prueba: "+str(avg(err_acum))+ " ,Falso Positivo: "+str(avg(falso_positivo))+" ,Falso negativo: "+str(avg(falso_negativo))+"\n")
-    return avg(err_entrenamiento), avg(err_acum), avg(falso_positivo), avg(falso_negativo), avg(aciertos), avg(desaciertos), avg(aciertos)*100/(avg(aciertos)+avg(desaciertos))
-#h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, num_neurona, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo, casos_acertados, casos_no_acertados, efectividad\n")
-
-if __name__ == '__main__':
-    alpha = [0.01,0.05,0.1,0.15,0.2,0.25,0.3]
-    data = "datosP2_AJ2018_B2_N2000.txt"
-    proving = "prueba_B2_barrido_100_por_100.txt"
-
-
-    h=open("results.csv", "w")
-    h.write("Archivo_de_datos, Archivo_de_prueba, tasa_aprendizaje, catidad_corridas, error_entrenamiento, error_prueba, falso_positivo, falso_negativo, casos_acertados, casos_no_acertados, efectividad\n")
-    for i in range(len(alpha)):
-        print("alpha: ",alpha[i])
-        print("---------------------------------------------------------------------")
-        n=2
-        a,b,c,d,e,f,g=corrida(data,proving,n,alpha[i],6)
-        h.write(data+", "+proving+" ,"+str(alpha[i])+" ,"+str(n)+" ,"+str(a)+" ,"+str(b)+" ,"+str(c)+" ,"+str(d)+" ,"+str(e)+" ,"+str(f)+" ,"+str(g)+"\n")
-    h.close()
