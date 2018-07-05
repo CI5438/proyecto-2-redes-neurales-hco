@@ -22,7 +22,7 @@ Ubicarse en el directorio del proyecto y ejecutar el comando correspondiente a l
 
 **Solución de la pregunta dos:**
 
-Para obtener la solución a la Pregunta 2 se deben hacer las llamadas a las funciones que se encuentran en el archivo pregunta_2 ya que esta pregunta se resuelve en distintas etapas.
+Para obtener la solución a la Pregunta 2 se deben realizar las llamadas a las funciones que se encuentran en el archivo pregunta_2.py ya que esta pregunta tiene distintas etapas.
 
 **Solución de la pregunta tres:**
 
