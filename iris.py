@@ -75,7 +75,7 @@ def split(df, p):
     
     return df.sample(n=training_size), df.sample(n=validation_size)
 
-def calculate_fit(row, fitset, lower, upper):
+def build_fit(row, fitset, lower, upper):
     """Stores in the fitset array the data of a row in 
     the interval of [lower, upper) limit.
 
@@ -173,16 +173,16 @@ def fit_data(df, ys=1):
     ncols = len(df.columns)
     xsize = ncols-ys
 
-    # Calculate x, y subsets 
+    # Build x, y subsets 
     for index, row in df.iterrows():
         xdata, ydata = [], []
 
-        # Calculate x subarray for current row
-        calculate_fit(row, xdata, 0, xsize)
+        # Build x subarray for current row
+        build_fit(row, xdata, 0, xsize)
         x.append(xdata)
 
-        # Calculate y subarray for current row
-        calculate_fit(row, ydata, xsize, xsize+ys)
+        # Build y subarray for current row
+        build_fit(row, ydata, xsize, xsize+ys)
         y.append(ydata)
 
     return x, y
@@ -242,7 +242,7 @@ def init():
     print("Clasificador binario")
     start_evaluation(setosa_df, 1)
     
-    print("Clasificador de las tres clases")
+    print("Clasificador de las tres especies")
     start_evaluation(df, 3)
 
 if __name__ == '__main__':
