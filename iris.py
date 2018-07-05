@@ -242,7 +242,7 @@ def init():
     print("Clasificador binario")
     start_evaluation(setosa_df, 1)
     
-    print("Clasificador de las tres clases")
+    print("Clasificador de las tres especies")
     start_evaluation(df, 3)
 
 if __name__ == '__main__':
