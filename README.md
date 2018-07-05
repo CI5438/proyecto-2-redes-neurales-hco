@@ -23,7 +23,7 @@ Ubicarse en el directorio del proyecto y ejecutar el comando correspondiente a l
 **Solución de la pregunta dos:**
 
 ```bash
-python3 clasificacion.py
+python3 pregunta_2.py
 ```
 
 **Solución de la pregunta tres:**
