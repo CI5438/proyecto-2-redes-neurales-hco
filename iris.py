@@ -13,7 +13,7 @@ Authors:
 import sys
 
 import pandas as pd
-from main import *
+from neuralnetworkbp import *
 
 def drop_column(df, column):
     """Remove column by specifying label names.
